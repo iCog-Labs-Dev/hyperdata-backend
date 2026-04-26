@@ -12,17 +12,13 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-
     "migration:revert": "npm run typeorm -- migration:revert -d src/database/data-source.ts",
     "migration:show": "npm run typeorm -- migration:show -d src/database/data-source.ts",
     "migration:create": "npm run typeorm -- migration:create src/database/migrations/migration",
     "migration:run:prod": "node ./node_modules/typeorm/cli.js migration:run -d dist/database/data-source.js",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-
     "migration:generate": "npm run typeorm -- migration:generate -d src/database/data-source.ts src/database/migrations/migration",
     "migration:run": "npm run typeorm -- migration:run -d src/database/data-source.ts",
-
-   
     "seed": "ts-node ./node_modules/typeorm-extension/dist/cli/index.js seed -d src/database/data-source.ts",
     "seed:run": "npx typeorm-extension seed:run -- -d src/database/data-source.ts -s src/database/seeds/RejectionType",
     "seed:create": "npx typeorm-extension seed:create   --name src/database/seeds/RejectionType",
@@ -129,6 +125,9 @@
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "moduleNameMapper": {
+      "^src/(.*)$": "<rootDir>/$1"
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"
