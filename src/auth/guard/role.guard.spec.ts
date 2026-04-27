@@ -46,4 +46,12 @@ describe('RolesGuard', () => {
       guard.canActivate(createContext({ role: { name: Role.REVIEWER } })),
     ).toThrow(ForbiddenException);
   });
+
+  it('should deny access cleanly when the request has no authenticated user', () => {
+    reflector.getAllAndOverride.mockReturnValue([Role.ADMIN]);
+
+    expect(() => guard.canActivate(createContext(undefined))).toThrow(
+      ForbiddenException,
+    );
+  });
 });

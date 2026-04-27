@@ -317,7 +317,7 @@ describe('UserService', () => {
       expect(hashPasswordMock).not.toHaveBeenCalled();
     });
 
-    it('should hash the password and create contributor users with wallet support', async () => {
+    it('should hash the password and initialize wallet and score for contributor users', async () => {
       mockRelatedLookups(RoleConstant.CONTRIBUTOR);
       jest
         .spyOn(service, 'findOne')
@@ -344,7 +344,10 @@ describe('UserService', () => {
         'user-1',
         undefined,
       );
-      expect(userScoreService.createScore).not.toHaveBeenCalled();
+      expect(userScoreService.createScore).toHaveBeenCalledWith(
+        'user-1',
+        undefined,
+      );
     });
 
     it('should create contributor users through a query runner and initialize wallet and score', async () => {

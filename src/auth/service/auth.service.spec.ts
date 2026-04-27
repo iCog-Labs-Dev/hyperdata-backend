@@ -163,12 +163,10 @@ describe('AuthService', () => {
       fileService.getPreSignedUrl.mockResolvedValue(
         'https://cdn.example/avatar',
       );
-      jest
-        .spyOn(service, 'generateToken')
-        .mockResolvedValue({
-          access_token: 'access',
-          refresh_token: 'refresh',
-        });
+      jest.spyOn(service, 'generateToken').mockResolvedValue({
+        access_token: 'access',
+        refresh_token: 'refresh',
+      });
 
       await expect(
         service.signIn('user@example.com', 'secret'),
@@ -255,12 +253,10 @@ describe('AuthService', () => {
       fileService.getPreSignedUrl.mockResolvedValue(
         'https://cdn.example/mobile',
       );
-      jest
-        .spyOn(service, 'generateToken')
-        .mockResolvedValue({
-          access_token: 'access',
-          refresh_token: 'refresh',
-        });
+      jest.spyOn(service, 'generateToken').mockResolvedValue({
+        access_token: 'access',
+        refresh_token: 'refresh',
+      });
 
       await expect(service.mobileSignIn(credential)).resolves.toEqual({
         user: {
@@ -297,15 +293,24 @@ describe('AuthService', () => {
         new_refresh_token: 'new-refresh-token',
       });
 
-      expect(jwtService.verify).toHaveBeenCalledWith('refresh-token');
+      expect(jwtService.verify).toHaveBeenCalledWith('refresh-token', {
+        secret: 'refresh-secret',
+      });
       expect(jwtService.sign).toHaveBeenNthCalledWith(1, {
         sub: 'user-1',
         email: 'user@example.com',
       });
-      expect(jwtService.sign).toHaveBeenNthCalledWith(2, {
-        sub: 'user-1',
-        email: 'user@example.com',
-      });
+      expect(jwtService.sign).toHaveBeenNthCalledWith(
+        2,
+        {
+          sub: 'user-1',
+          email: 'user@example.com',
+        },
+        {
+          expiresIn: '7d',
+          secret: 'refresh-secret',
+        },
+      );
     });
 
     it('should reject invalid refresh tokens', async () => {

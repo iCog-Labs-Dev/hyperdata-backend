@@ -241,6 +241,7 @@ export class UserService {
         role.name == RoleConstant.CONTRIBUTOR ||
         role.name == RoleConstant.REVIEWER
       ) {
+        await this.userScoreService.createScore(userCreated.id, queryRunner);
         await this.walletService.findOneOrCreate(userCreated.id, queryRunner);
       }
       return userCreated;
@@ -402,12 +403,12 @@ export class UserService {
       if (query.where.length === 0) {
         query.where.push({ is_active: true, role_id: manager_role_id });
       } else {
-      const data = query.where.map((item) =>({
-        ...item,
-        is_active: true,
-        role_id: manager_role_id,
-      }));
-    }
+        const data = query.where.map((item) => ({
+          ...item,
+          is_active: true,
+          role_id: manager_role_id,
+        }));
+      }
     } else {
       query.where = {
         ...query.where,
