@@ -141,15 +141,20 @@ export class AuthService {
    */
   async refreshToken(refresh_token: string): Promise<any> {
     try {
-      const user = await this.jwtService.verify(refresh_token);
+      const user = await this.jwtService.verify(refresh_token, {
+        secret: process.env.JWT_REFRESH_SECRET,
+      });
       const access_token = this.jwtService.sign({
         sub: user?.sub,
         email: user?.email,
       });
-      const new_refresh_token = this.jwtService.sign({
-        sub: user?.sub,
-        email: user?.email,
-      });
+      const new_refresh_token = this.jwtService.sign(
+        {
+          sub: user?.sub,
+          email: user?.email,
+        },
+        { expiresIn: '7d', secret: process.env.JWT_REFRESH_SECRET },
+      );
       return { access_token, new_refresh_token };
     } catch (error) {
       throw new UnauthorizedException();
