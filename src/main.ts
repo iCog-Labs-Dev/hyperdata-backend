@@ -9,7 +9,27 @@ import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { Queue } from 'bullmq';
 import { ConfigService } from '@nestjs/config';
-import {  Logger } from '@nestjs/common';
+import { InternalServerErrorException, Logger } from '@nestjs/common';
+import { AllExceptionsFilter } from './common/filters/http-exception.filter';
+
+function parseCorsOrigin(corsOrigin: string): string | string[] {
+  if (corsOrigin === '*') {
+    return corsOrigin;
+  }
+
+  return corsOrigin
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+}
+
+function sanitizeUrl(rawUrl?: string): string {
+  if (!rawUrl) {
+    return 'not configured';
+  }
+
+  return rawUrl.replace(/:\/\/([^:]+):([^@]+)@/, '://$1:***@');
+}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -17,6 +37,7 @@ async function bootstrap() {
   });
 
   const configService = app.get(ConfigService);
+  app.useGlobalFilters(new AllExceptionsFilter());
   app.useGlobalPipes(new CustomValidationPipe());
 
   patchNestJsSwagger();
@@ -34,17 +55,24 @@ async function bootstrap() {
   const corsOrigin = configService.get<string>('CORS_ORIGIN') || '*';
   const environment = configService.get<string>('NODE_ENV');
   const port = configService.get<number>('PORT');
+  if (environment === 'production' && corsOrigin === '*') {
+    Logger.error('CORS_ORIGIN cannot be * in production');
+    throw new InternalServerErrorException('Unsafe CORS configuration');
+  }
+
   app.enableCors({
-    origin: corsOrigin,
-  }); //  This allows all origins by default
+    origin: parseCorsOrigin(corsOrigin),
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  });
   app.useGlobalInterceptors(new GlobalResponseInterceptor());
   app.setGlobalPrefix('api');
-
 
   // Create your queues
   const myQueue = new Queue('file-upload', {
     connection: {
-      host:  configService.get<string>('REDIS_HOST'), 
+      host: configService.get<string>('REDIS_HOST'),
       port: Number(configService.get<string>('REDIS_PORT') || '6379'),
     },
   });
@@ -60,15 +88,18 @@ async function bootstrap() {
   app.use('/admin/queues', serverAdapter.getRouter());
 
   await app.listen(process.env.PORT ?? 3000);
-  
+
   Logger.log(`🚀 Leyu Api  is running on port ${port}`);
   Logger.log(`📦 Environment: ${environment}`);
   Logger.log(`🌐 CORS enabled for origin: ${corsOrigin}`);
   Logger.log(`📚 Swagger documentation: http://localhost:${port}/api/docs`);
-  Logger.log(`💾 Database: ${configService.get<string>('DATABASE_URL')}`);
-  Logger.log(`📦 Redis: ${configService.get<string>('REDIS_URL')}`);
-  Logger.log(`📦 RabbitMQ: ${configService.get<string>('RABBITMQ_URI')}`);
+  Logger.log(
+    `💾 Database: ${sanitizeUrl(configService.get<string>('DATABASE_URL'))}`,
+  );
+  Logger.log(`📦 Redis: ${sanitizeUrl(configService.get<string>('REDIS_URL'))}`);
+  Logger.log(
+    `📦 RabbitMQ: ${sanitizeUrl(configService.get<string>('RABBITMQ_URI'))}`,
+  );
   Logger.log(`📦 Minio: ${configService.get<string>('MINIO_ENDPOINT')}`);
-
 }
 bootstrap();

@@ -95,7 +95,6 @@ import configuration from './config/configuration';
     AuthModule,
     CommonModule,
     ProjectModule,
-    ProjectModule,
     DataSetModule,
     CommunicationModule,
     FinanceModule,
