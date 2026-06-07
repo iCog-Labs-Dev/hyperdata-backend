@@ -59,4 +59,32 @@ describe('AllExceptionsFilter', () => {
       }),
     );
   });
+
+  it('should format array validation messages with an errors field', () => {
+    const json = jest.fn();
+    const response = {
+      status: jest.fn().mockReturnValue({ json }),
+    };
+    const errors = [
+      { field: 'email', message: 'Invalid email' },
+      { field: 'password', message: 'Password is required' },
+    ];
+    const exception = new HttpException(
+      { message: errors },
+      HttpStatus.BAD_REQUEST,
+    );
+
+    filter.catch(exception, createHost(response, '/auth/signup'));
+
+    expect(response.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
+    expect(json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Validation failed',
+        code: HttpStatus.BAD_REQUEST,
+        data: null,
+        errors,
+        path: '/auth/signup',
+      }),
+    );
+  });
 });
