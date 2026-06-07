@@ -334,9 +334,13 @@ DC_BACK_APP_PORT=3000
    - Check API endpoints and tokens
    - Review rate limits and quotas
 
-## License
+## License & Attribution
 
-This project is licensed under the UNLICENSED License - see the package.json file for details.
+This project is a fork of [Dave-lab12/leyu-backend](https://github.com/Dave-lab12/leyu-backend) and is distributed under the **Apache License, Version 2.0**. See the [`LICENSE`](./LICENSE) file for the full license text.
+
+Modifications made in this fork are documented in [`CHANGES.md`](./CHANGES.md), in compliance with Section 4(b) of the Apache 2.0 License.
+
+This fork is not affiliated with or endorsed by the upstream project. Apache 2.0 does not grant trademark rights to upstream names or logos.
 
 ## Support
 
