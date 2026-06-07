@@ -3,36 +3,33 @@ FROM node:22-alpine AS builder
 
 WORKDIR /usr/src/app
 
-# Copy package files first (better caching)
 COPY package*.json ./
-
-# Install all dependencies (including dev)
 RUN npm ci
 
-# Copy source code
 COPY . .
-
-COPY .env .env
-# Build the app
 RUN npm run build
+
+# Strip dev dependencies so the resulting node_modules can be copied forward.
+RUN npm prune --omit=dev
 
 
 # ---------- Stage 2: Production ----------
 FROM node:22-alpine AS production
 
+ENV NODE_ENV=production
 WORKDIR /usr/src/app
 
-# Copy package files
-COPY package*.json ./
+RUN apk add --no-cache wget
 
-# Install only production dependencies
-RUN npm ci --omit=dev
+COPY --from=builder /usr/src/app/package*.json ./
+COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /usr/src/app/dist ./dist
 
-# Copy built files from builder
-COPY --from=builder /usr/src/app ./
+USER node
 
-# Expose port
 EXPOSE 3000
 
-# Start the app
-CMD ["sh", "-c", "sleep 4 && npm run migration:run:prod && node dist/main.js"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD wget -qO- http://localhost:3000/api/health || exit 1
+
+CMD ["sh", "-c", "npm run migration:run:prod && node dist/main.js"]
