@@ -12,7 +12,6 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-COPY .env .env
 # Build the app
 RUN npm run build
 
@@ -28,8 +27,8 @@ COPY package*.json ./
 # Install only production dependencies
 RUN npm ci --omit=dev
 
-# Copy built files from builder
-COPY --from=builder /usr/src/app ./
+# Copy built application only; runtime config is injected by the deployment.
+COPY --from=builder /usr/src/app/dist ./dist
 
 # Expose port
 EXPOSE 3000
