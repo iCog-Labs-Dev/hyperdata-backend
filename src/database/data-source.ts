@@ -11,7 +11,7 @@ export const dataSourceOptions: PostgresConnectionOptions & SeederOptions = {
   schema: schema,
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   migrations: [__dirname + '/migrations/*{.ts,.js}'],
-  seeds: [__dirname + '/../seeds/*{.ts,.js}'], //
+  seeds: [__dirname + '/seeds/*{.ts,.js}'], //
   synchronize: false,
   connectTimeoutMS: 5000,
   logging: false,

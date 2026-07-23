@@ -1,15 +1,14 @@
-// src/db/seeds/user.seeder.ts
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 import { DataSource } from 'typeorm';
 import { Role } from '../../auth/entities/Role.entity';
-export default class UserSeeder implements Seeder {
+export default class RoleSeeder implements Seeder {
   public async run(
     dataSource: DataSource,
     factoryManager: SeederFactoryManager,
   ): Promise<void> {
     const repository = dataSource.getRepository(Role);
-    await repository.insert([
-      {
+    await repository.upsert([
+     {
         name: 'SuperAdmin',
         description: 'Super Admin',
       },
@@ -29,6 +28,6 @@ export default class UserSeeder implements Seeder {
         name: 'Reviewer',
         description: 'Reviewer',
       },
-    ]);
+    ], ['name']);
   }
 }
