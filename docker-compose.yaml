@@ -119,7 +119,7 @@ services:
       redis:
         condition: service_healthy
       rabbitmq:
-        condition: service_healthy
+        condition: service_started
       minio-init:
         condition: service_completed_successfully
     environment:
