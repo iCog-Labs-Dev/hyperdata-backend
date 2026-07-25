@@ -34,4 +34,4 @@ COPY --from=builder /usr/src/app/dist ./dist
 EXPOSE 3000
 
 # Start the app
-CMD ["sh", "-c", "sleep 4 && npm run migration:run:prod; node dist/main.js"]
+CMD ["sh", "-c", "sleep 4 && npm run migration:run:prod && node dist/main.js"]
