@@ -700,7 +700,7 @@ export class UserService {
    */
   private async createSuperAdminIfNotExists() {
     await Promise.all(
-      ['SuperAdmin', 'Admin', 'ProjectManager', 'Reviewer', 'Facilitator', 'Contributor'].map(
+      ['SuperAdmin', 'ProjectManager', 'Reviewer', 'Facilitator', 'Contributor'].map(
         async (name) => {
           const role = await this.roleService.findOne({ name });
           if (!role) {
