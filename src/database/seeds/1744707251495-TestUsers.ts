@@ -17,7 +17,6 @@ export default class TestUsers1744707251495 implements Seeder {
     const users = [
       { email: 'super@gmail.com', first_name: 'SuperAdmin 0', role: 'SuperAdmin' },
       { email: 'super1@gmail.com', first_name: 'SuperAdmin 1', role: 'SuperAdmin' },
-      { email: 'admin@gmail.com', first_name: 'Admin 0', role: 'Admin' },
       { email: 'faci@gmail.com', first_name: 'Facilitator 0', role: 'Facilitator' },
       { email: 'rev@gmail.com', first_name: 'Reviewer 0', role: 'Reviewer' },
       { email: 'rev2@gmail.com', first_name: 'Reviewer 1', role: 'Reviewer' },
@@ -25,7 +24,6 @@ export default class TestUsers1744707251495 implements Seeder {
       { email: 'cont1@gmail.com', first_name: 'Contributor 1', role: 'Contributor' },
       { email: 'proj@gmail.com', first_name: 'ProjectManager 0', role: 'ProjectManager' },
       { email: 'proj1@gmail.com', first_name: 'ProjectManager 1', role: 'ProjectManager' },
-      { email: 'admin1@gmail.com', first_name: 'Admin 1', role: 'Admin' },
       { email: 'faci1@gmail.com', first_name: 'Facilitator 1', role: 'Facilitator' },
     ];
 
