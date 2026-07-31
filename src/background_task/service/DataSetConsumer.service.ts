@@ -15,7 +15,6 @@ import { TaskService } from 'src/project/service/Task.service';
 import { UserTask } from 'src/project/entities/UserTask.entity';
 import { MicroTask } from 'src/data_set/entities/MicroTask.entity';
 import { checkIfMicroTasIskRejectedAndTotalAttempts } from 'src/utils/MicroTask.util';
-import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class DatasetConsumer {
   private readonly logger = new Logger(DatasetConsumer.name);
@@ -31,7 +30,7 @@ export class DatasetConsumer {
     private readonly notificationService: NotificationService,
     private readonly userScoreService: UserScoreService,
     private readonly taskService: TaskService,
-    private readonly microTaskService: MicroTaskService
+    private readonly microTaskService: MicroTaskService,
   ) {}
   @RabbitSubscribe({
     exchange: process.env.DATASET_RABBITMQ_EXCHANGE_NAME || 'dataset.exchange',

@@ -40,7 +40,10 @@ import { Role } from 'src/auth/decorators/roles.enum';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guard/role.guard';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { multerAudioS3Storage, multerCSVS3Storage } from 'src/config/minio.config';
+import {
+  multerAudioS3Storage,
+  multerCSVS3Storage,
+} from 'src/config/minio.config';
 import { DataSource, FindOptionsWhere, QueryRunner } from 'typeorm';
 import { FileService } from 'src/common/service/File.service';
 import { ActivityLogService } from 'src/common/service/ActivityLog.service';

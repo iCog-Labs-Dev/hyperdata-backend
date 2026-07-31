@@ -58,7 +58,7 @@ export class TaskDistributionController {
     private readonly taskRedistributionService: TaskRedistributionService,
     private readonly getTaskService: GetTasksService,
     private readonly fileService: FileService,
-    private readonly audioService:AudioService,
+    private readonly audioService: AudioService,
     private readonly dataSource: DataSource,
     @InjectQueue('file-upload')
     private readonly fileQueue: Queue,
@@ -409,7 +409,7 @@ export class TaskDistributionController {
     const submissions: {
       micro_task_id: string;
       file_path: string;
-      audio_duration:number;
+      audio_duration: number;
     }[] = [];
     let { is_test } = req.body; // Get batch from request body, default to false
     is_test = is_test === 'true' || is_test === true; // Convert to boolean
@@ -418,7 +418,7 @@ export class TaskDistributionController {
         submissions.push({
           micro_task_id: file.fieldname,
           file_path: '', //  file.key, // Use the file key as the file path
-           audio_duration:await this.audioService.getAudioDuration(file.path),
+          audio_duration: await this.audioService.getAudioDuration(file.path),
         });
       }
 

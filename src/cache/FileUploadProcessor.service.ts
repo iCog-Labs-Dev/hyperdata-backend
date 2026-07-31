@@ -14,7 +14,6 @@ export class FileUploadProcessor extends WorkerHost {
   constructor(
     private readonly fileService: FileService,
     private readonly dataSetService: DataSetService,
-    
   ) {
     super();
   }

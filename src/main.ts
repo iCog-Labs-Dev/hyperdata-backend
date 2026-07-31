@@ -96,7 +96,9 @@ async function bootstrap() {
   Logger.log(
     `💾 Database: ${sanitizeUrl(configService.get<string>('DATABASE_URL'))}`,
   );
-  Logger.log(`📦 Redis: ${sanitizeUrl(configService.get<string>('REDIS_URL'))}`);
+  Logger.log(
+    `📦 Redis: ${sanitizeUrl(configService.get<string>('REDIS_URL'))}`,
+  );
   Logger.log(
     `📦 RabbitMQ: ${sanitizeUrl(configService.get<string>('RABBITMQ_URI'))}`,
   );

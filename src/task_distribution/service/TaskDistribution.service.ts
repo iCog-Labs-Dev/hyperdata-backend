@@ -133,7 +133,6 @@ export class TaskDistributionService {
     return;
   }
 
-
   /**
    * Processes contributor–microtask distribution using gender-based constraints.
    *
@@ -824,7 +823,6 @@ export class TaskDistributionService {
     );
     return;
   }
-
 
   async assignMicroTasksToContributor(
     contributor_id: string,

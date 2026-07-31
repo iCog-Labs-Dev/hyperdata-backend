@@ -274,7 +274,7 @@ export class TaskSubmissionService {
     datasets: {
       micro_task_id: string;
       file_path: string;
-      audio_duration:number;
+      audio_duration: number;
     }[],
     task_id: string,
     is_test: boolean = false,
@@ -340,13 +340,13 @@ export class TaskSubmissionService {
           dialect_id: string;
           language_id: string;
           is_test: boolean;
-          audio_duration:number
+          audio_duration: number;
         }[] = [];
         datasets.forEach((d) => {
           if (test_microTasks.find((m) => m.id == d.micro_task_id)) {
             test_data_set.push({
               ...d,
-              audio_duration:d.audio_duration,
+              audio_duration: d.audio_duration,
               dialect_id: user.dialect_id,
               language_id: user.language_id,
               is_test: true,
@@ -398,14 +398,14 @@ export class TaskSubmissionService {
           dialect_id: string;
           language_id: string;
           is_test: boolean;
-          audio_duration:number
+          audio_duration: number;
         }[] = datasets.map((d) => ({
           micro_task_id: d.micro_task_id,
           file_path: d.file_path,
           dialect_id,
           language_id,
           is_test: false,
-          audio_duration:d.audio_duration
+          audio_duration: d.audio_duration,
         }));
         await this.userTaskService.findOneOrCreate(
           { where: { task_id: task_id, user_id: user_id } },

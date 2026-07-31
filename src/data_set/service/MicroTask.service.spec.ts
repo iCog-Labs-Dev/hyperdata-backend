@@ -14,8 +14,6 @@ jest.mock('src/auth/service/User.service', () => ({
   UserService: class UserService {},
 }));
 
-import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { QueryRunner } from 'typeorm';
 import { MicroTaskService } from './MicroTask.service';
 import { taskTypes } from 'src/utils/constants/Task.constant';
 import { DataSetStatus } from 'src/utils/constants/DataSetStatus.constant';

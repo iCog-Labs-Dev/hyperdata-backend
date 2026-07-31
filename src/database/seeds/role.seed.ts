@@ -7,27 +7,30 @@ export default class RoleSeeder implements Seeder {
     factoryManager: SeederFactoryManager,
   ): Promise<void> {
     const repository = dataSource.getRepository(Role);
-    await repository.upsert([
-     {
-        name: 'SuperAdmin',
-        description: 'Super Admin',
-      },
-      {
-        name: 'Admin',
-        description: 'Admin',
-      },
-      {
-        name: 'Contributor',
-        description: 'Contributor',
-      },
-      {
-        name: 'Facilitator',
-        description: 'Facilitator',
-      },
-      {
-        name: 'Reviewer',
-        description: 'Reviewer',
-      },
-    ], ['name']);
+    await repository.upsert(
+      [
+        {
+          name: 'SuperAdmin',
+          description: 'Super Admin',
+        },
+        {
+          name: 'Admin',
+          description: 'Admin',
+        },
+        {
+          name: 'Contributor',
+          description: 'Contributor',
+        },
+        {
+          name: 'Facilitator',
+          description: 'Facilitator',
+        },
+        {
+          name: 'Reviewer',
+          description: 'Reviewer',
+        },
+      ],
+      ['name'],
+    );
   }
 }

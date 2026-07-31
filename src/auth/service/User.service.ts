@@ -18,7 +18,6 @@ import { RoleService } from './Role.service';
 import { paginate, PaginatedResult } from 'src/utils/paginate.util';
 import { PaginationService } from 'src/common/service/pagination.service';
 import { PaginationDto } from 'src/common/dto/Pagination.dto';
-import { Role } from '../entities/Role.entity';
 import { Role as RoleConstant } from '../decorators/roles.enum';
 import { QueryOptions } from 'src/utils/queryOption.util';
 import { UserVerificationCodeService } from './UserVerificationCode.service';
@@ -700,17 +699,21 @@ export class UserService {
    */
   private async createSuperAdminIfNotExists() {
     await Promise.all(
-      ['SuperAdmin', 'ProjectManager', 'Reviewer', 'Facilitator', 'Contributor'].map(
-        async (name) => {
-          const role = await this.roleService.findOne({ name });
-          if (!role) {
-            await this.roleService.create({
-              name,
-              description: `${name} Role`,
-            });
-          }
-        },
-      ),
+      [
+        'SuperAdmin',
+        'ProjectManager',
+        'Reviewer',
+        'Facilitator',
+        'Contributor',
+      ].map(async (name) => {
+        const role = await this.roleService.findOne({ name });
+        if (!role) {
+          await this.roleService.create({
+            name,
+            description: `${name} Role`,
+          });
+        }
+      }),
     );
   }
   /**

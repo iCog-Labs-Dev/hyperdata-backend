@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 export type AfroResponse = {
   acknowledge: string;
   response: {

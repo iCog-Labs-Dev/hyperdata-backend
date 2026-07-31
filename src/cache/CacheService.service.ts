@@ -13,9 +13,7 @@ import {
 
 @Injectable()
 export class CacheService implements OnModuleInit, OnModuleDestroy {
-  constructor(
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly configService: ConfigService) {}
   async onModuleInit() {
     const redisUrl = this.configService.get<string>('REDIS_URL') as string;
     this.client = new Redis(redisUrl);
