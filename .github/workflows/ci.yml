@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   lint-and-test:
-    name: Lint and test
+    name: Lint, typecheck & test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -40,6 +40,9 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
 
       - name: Unit tests with coverage
         run: npm run test:cov -- --runInBand
