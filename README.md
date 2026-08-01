@@ -249,9 +249,13 @@ The system is designed around projects, tasks, micro-tasks, contributors, review
    SMS_TOKEN=your_sms_token
 
    MINIO_ENDPOINT=http://localhost:9000
-   MINIO_ACCESS_KEY=minio_access_key
-   MINIO_SECRET_KEY=minio_secret_key
-   MINIO_BUCKET=your_bucket_name
+   MINIO_ROOT_USER=minio_root_admin
+   MINIO_ROOT_PASSWORD=replace_with_a_long_random_root_password
+   MINIO_ACCESS_KEY=leyu_app_storage
+   MINIO_SECRET_KEY=replace_with_a_long_random_app_password
+   MINIO_BUCKET=leyu-bucket
+   MINIO_S3_FORCE_PATH_STYLE=true
+   MINIO_SIGNATURE_VERSION=v4
 
    EMAIL_USER=your_email@example.com
    EMAIL_PASS=your_email_app_password
@@ -299,6 +303,8 @@ Docker Compose starts:
 - `postgres`
 - `redis`
 - `rabbitmq`
+- `minio`
+- `minio-init`
 - `app`
 
 Start the full stack:
@@ -326,6 +332,8 @@ docker compose down -v
 ```
 
 RabbitMQ management UI is available at `http://localhost:15672` with the default local credentials `guest / guest`.
+
+MinIO is available to containers at `http://minio:9000`. For local host access, the API and console bind to `127.0.0.1:9000` and `127.0.0.1:9001` by default. The `minio-init` job creates the configured bucket and app-scoped storage user before the API starts.
 
 See [RUN_BACKEND.md](RUN_BACKEND.md) for the detailed Docker runbook.
 
@@ -418,7 +426,7 @@ password: guest@1234
 ## Operational Notes
 
 - `NODE_ENV=production` cannot use `CORS_ORIGIN=*`; configure a concrete origin or comma-separated origin list.
-- Docker Compose does not currently define a MinIO container. File upload/storage workflows require an external MinIO/S3-compatible service or an added Compose service.
+- Docker Compose defines MinIO and an idempotent `minio-init` job for local object storage.
 - The app validates required environment variables during startup with Joi.
 - The app sanitizes database, Redis, and RabbitMQ credentials in startup logs.
 - Production Docker startup runs compiled migrations before starting the API.
