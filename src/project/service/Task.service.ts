@@ -676,7 +676,7 @@ export class TaskService {
     task_id: string,
     contributor_ids: string[],
     queryRunner: QueryRunner,
-  ): Promise<UserTask[] | any> {
+  ): Promise<UserTask[]> {
     const task: Task | null = await this.findOne({
       where: { id: task_id },
       relations: { userToTasks: true },
@@ -727,7 +727,7 @@ export class TaskService {
           );
         }),
       );
-      return userTasks;
+      return userTasks.filter((ut): ut is UserTask => ut !== null);
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;

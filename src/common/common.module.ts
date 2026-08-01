@@ -12,7 +12,7 @@ import { PublisherService } from './service/RabbitPublish.service';
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TestController } from './controllers/Test.controller';
-import {AudioService } from './service/Audio.service'
+import { AudioService } from './service/Audio.service';
 @Global()
 @Module({
   imports: [
@@ -53,7 +53,7 @@ import {AudioService } from './service/Audio.service'
     ActivityLogService,
     NotificationService,
     PublisherService,
-    AudioService
+    AudioService,
   ],
   exports: [
     PaginationService,
@@ -61,7 +61,7 @@ import {AudioService } from './service/Audio.service'
     ActivityLogService,
     NotificationService,
     PublisherService,
-    AudioService
+    AudioService,
   ],
 })
 export class CommonModule {}

@@ -18,7 +18,6 @@ import { RoleService } from './Role.service';
 import { paginate, PaginatedResult } from 'src/utils/paginate.util';
 import { PaginationService } from 'src/common/service/pagination.service';
 import { PaginationDto } from 'src/common/dto/Pagination.dto';
-import { Role } from '../entities/Role.entity';
 import { Role as RoleConstant } from '../decorators/roles.enum';
 import { QueryOptions } from 'src/utils/queryOption.util';
 import { UserVerificationCodeService } from './UserVerificationCode.service';
@@ -694,56 +693,28 @@ export class UserService {
   }
 
   /**
-   * Creates a super admin user if one does not exist.
-   * Creates all the roles if they do not exist.
-   * Creates a super admin user with the id '15bc2137-0b08-449e-8e7e-c68f2e830bd5'
-   * , the email 'guest@gmail.com', the role 'SuperAdmin',
-   * and the password 'guest@1234'.
+   * Ensures all roles exist in the database.
+   * Creates any missing roles on startup.
    * @returns A promise resolving to nothing.
    */
   private async createSuperAdminIfNotExists() {
-    const superAdminExists = await this.userRepository.findOne({
-      where: {
-        role: { name: 'SuperAdmin' },
-      },
-    });
     await Promise.all(
-      ['Admin', 'ProjectManager', 'Reviewer', 'Facilitator', 'Contributor'].map(
-        async (name) => {
-          const role = await this.roleService.findOne({ name });
-          if (!role) {
-            await this.roleService.create({
-              name,
-              description: `${name} Role`,
-            });
-          }
-        },
-      ),
+      [
+        'SuperAdmin',
+        'ProjectManager',
+        'Reviewer',
+        'Facilitator',
+        'Contributor',
+      ].map(async (name) => {
+        const role = await this.roleService.findOne({ name });
+        if (!role) {
+          await this.roleService.create({
+            name,
+            description: `${name} Role`,
+          });
+        }
+      }),
     );
-    if (!superAdminExists) {
-      let role: Role | null = await this.roleService.findOne({
-        name: 'SuperAdmin',
-      });
-      if (!role) {
-        role = await this.roleService.create({
-          name: 'SuperAdmin',
-          description: 'Super Admin Role',
-        });
-      }
-      const hashedPassword = await hashPassword('guest@1234');
-      const superAdmin: User = this.userRepository.create({
-        id: '15bc2137-0b08-449e-8e7e-c68f2e830bd5',
-        first_name: 'SuperAdmin',
-        middle_name: 'SuperAdmin',
-        last_name: 'SuperAdmin',
-        gender: 'Female',
-        phone_number: '',
-        email: 'guest@gmail.com',
-        password: hashedPassword,
-        role: role || undefined,
-      });
-      await this.userRepository.save(superAdmin);
-    }
   }
   /**
    * Changes the password of a user

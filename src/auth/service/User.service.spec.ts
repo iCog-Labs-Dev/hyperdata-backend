@@ -40,7 +40,6 @@ jest.mock('src/utils/security/credential.util', () => ({
   verifyPassword: jest.fn(),
 }));
 
-import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { QueryRunner } from 'typeorm';
 import { UserService } from './User.service';

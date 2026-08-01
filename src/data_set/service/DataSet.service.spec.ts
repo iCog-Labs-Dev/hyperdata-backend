@@ -30,7 +30,6 @@ jest.mock('src/task_distribution/service/ReviewerTasks.service', () => ({
   ReviewerTaskService: class ReviewerTaskService {},
 }));
 
-import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { QueryRunner } from 'typeorm';
 import { DataSetService } from './DataSet.service';
 import { DataSetStatus } from 'src/utils/constants/DataSetStatus.constant';
