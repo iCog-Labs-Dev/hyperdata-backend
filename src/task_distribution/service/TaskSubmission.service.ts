@@ -146,7 +146,9 @@ export class TaskSubmissionService {
         if (queryRunner) {
           try {
             await queryRunner.release();
-          } catch (releaseError) {}
+          } catch (_releaseError) {
+            /* best effort */
+          }
         }
       }
     } else {
@@ -263,7 +265,9 @@ export class TaskSubmissionService {
         if (queryRunner) {
           try {
             await queryRunner.release();
-          } catch (releaseError) {}
+          } catch (_releaseError) {
+            /* best effort */
+          }
         }
       }
     }
@@ -483,7 +487,9 @@ export class TaskSubmissionService {
         if (queryRunner) {
           try {
             await queryRunner.release();
-          } catch (releaseError) {}
+          } catch (_releaseError) {
+            /* best effort */
+          }
         }
       }
     }

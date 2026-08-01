@@ -50,4 +50,10 @@ export default tseslint.config(
       '@typescript-eslint/require-await': 'warn'
     },
   },
+  {
+    files: ['**/*.spec.ts'],
+    rules: {
+      '@typescript-eslint/unbound-method': 'off',
+    },
+  },
 );

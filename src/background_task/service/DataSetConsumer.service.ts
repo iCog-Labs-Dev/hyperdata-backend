@@ -299,7 +299,6 @@ export class DatasetConsumer {
       return;
     } finally {
       await queryRunner.release();
-      return;
     }
   }
 }
