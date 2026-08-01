@@ -1,7 +1,8 @@
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 import { DataSource } from 'typeorm';
 import { Role } from '../../auth/entities/Role.entity';
-export default class RoleSeeder implements Seeder {
+
+export default class Role1744707155039 implements Seeder {
   public async run(
     dataSource: DataSource,
     factoryManager: SeederFactoryManager,
@@ -28,6 +29,10 @@ export default class RoleSeeder implements Seeder {
         {
           name: 'Reviewer',
           description: 'Reviewer',
+        },
+        {
+          name: 'ProjectManager',
+          description: 'Project Manager',
         },
       ],
       ['name'],
