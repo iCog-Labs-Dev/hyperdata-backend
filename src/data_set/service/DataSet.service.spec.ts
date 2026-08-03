@@ -100,7 +100,7 @@ describe('DataSetService', () => {
       dataSetRepository.create.mockImplementation((data) => data);
       dataSetRepository.save.mockImplementation(async (data) => data);
 
-      const created = await service.create({ text_data_set: 'hello' } as any);
+      const created = await service.create({ text_data_set: 'hello' });
 
       expect(dataSetRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -124,7 +124,7 @@ describe('DataSetService', () => {
       const queryRunner = { manager } as unknown as QueryRunner;
 
       const created = await service.create(
-        { text_data_set: 'hello' } as any,
+        { text_data_set: 'hello' },
         queryRunner,
       );
 
@@ -334,8 +334,8 @@ describe('DataSetService', () => {
       );
 
       const result = await service.findPaginate(
-        { where: { contributor_id: 'user-1' } } as any,
-        { page: 1, limit: 10 } as any,
+        { where: { contributor_id: 'user-1' } },
+        { page: 1, limit: 10 },
       );
 
       expect(paginateService.paginateWithOptionQuery).toHaveBeenCalledWith(
@@ -362,7 +362,7 @@ describe('DataSetService', () => {
       });
       fileService.getPreSignedUrl.mockResolvedValue('signed:audio.wav');
 
-      const result = await service.findOne({ where: { id: 'ds-1' } } as any);
+      const result = await service.findOne({ where: { id: 'ds-1' } });
 
       expect(fileService.getPreSignedUrl).toHaveBeenCalledWith('audio.wav');
       expect(result).toMatchObject({ file_path: 'signed:audio.wav' });

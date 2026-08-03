@@ -24,7 +24,7 @@ import { AudioService } from './service/Audio.service';
         exchanges: [
           {
             name: config.get<string>('RABBITMQ_EXCHANGE_NAME') as string,
-            type: config.get<string>('RABBITMQ_EXCHANGE_TYPE') as any,
+            type: config.get<string>('RABBITMQ_EXCHANGE_TYPE'),
           },
           {
             name: config.get<string>(
