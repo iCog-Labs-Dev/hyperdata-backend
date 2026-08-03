@@ -13,14 +13,16 @@ import { InternalServerErrorException, Logger } from '@nestjs/common';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 
 function parseCorsOrigin(corsOrigin: string): string | string[] {
-  if (corsOrigin === '*') {
-    return corsOrigin;
-  }
-
-  return corsOrigin
+  const origins = corsOrigin
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean);
+
+  if (origins.includes('*')) {
+    return '*';
+  }
+
+  return origins;
 }
 
 function sanitizeUrl(rawUrl?: string): string {
@@ -55,13 +57,14 @@ async function bootstrap() {
   const corsOrigin = configService.get<string>('CORS_ORIGIN') || '*';
   const environment = configService.get<string>('NODE_ENV');
   const port = configService.get<number>('PORT');
-  if (environment === 'production' && corsOrigin === '*') {
+  const parsedCorsOrigin = parseCorsOrigin(corsOrigin);
+  if (environment === 'production' && parsedCorsOrigin === '*') {
     Logger.error('CORS_ORIGIN cannot be * in production');
     throw new InternalServerErrorException('Unsafe CORS configuration');
   }
 
   app.enableCors({
-    origin: parseCorsOrigin(corsOrigin),
+    origin: parsedCorsOrigin,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],

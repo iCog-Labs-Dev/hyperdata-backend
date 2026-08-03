@@ -9,6 +9,14 @@ export default class TestUsers1744707251495 implements Seeder {
     dataSource: DataSource,
     factoryManager: SeederFactoryManager,
   ): Promise<any> {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('Demo user seed cannot run in production');
+    }
+
+    if (process.env.ENABLE_DEMO_USERS_SEED !== 'true') {
+      return;
+    }
+
     const hashedPassword = await bcrypt.hash('12345678', 10);
 
     const roles = await dataSource.query(`SELECT id, name FROM role`);
