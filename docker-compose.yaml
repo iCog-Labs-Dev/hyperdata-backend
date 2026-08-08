@@ -2,7 +2,7 @@
 services:
   postgres:
     image: postgres:15-alpine
-    container_name: leyu_postgres
+    container_name: mahder_postgres
     restart: always
     environment:
       POSTGRES_USER: ${DB_USERNAME}
