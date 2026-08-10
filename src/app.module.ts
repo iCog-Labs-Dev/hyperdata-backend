@@ -37,6 +37,8 @@ import configuration from './config/configuration';
           .valid('development', 'production', 'test', 'provision'),
         JWT_SECRET: Joi.string().required(),
         JWT_REFRESH_SECRET: Joi.string().required(),
+        OTP_HMAC_SECRET: Joi.string().min(32).required(),
+        TRUST_PROXY_HOPS: Joi.number().integer().min(0).max(10).default(0),
         DATABASE_URL: Joi.string().required(),
         DATABASE_SCHEMA: Joi.string().required(),
         REDIS_HOST: Joi.string().required(),
