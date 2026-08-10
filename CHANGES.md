@@ -55,6 +55,7 @@ record.
   management routes, and limited manager reassignment to super-administrators.
 - Bound text and audio submissions to microtasks from the requested task and to
   the contributor's assigned work list.
+- Updated dataset service test doubles for reviewer-assignment enforcement.
 ## How to record future changes
 
 When making non-trivial modifications, add a short entry under a new dated
