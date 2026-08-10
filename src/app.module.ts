@@ -97,7 +97,7 @@ import configuration from './config/configuration';
         },
       },
       defaults: {
-        from: '"Leyu" leyu@gmail.com',
+        from: '"Mahder" mahder@gmail.com',
       },
     }),
     BullModule.forRoot({

@@ -10,7 +10,7 @@ ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true });
 const configService = new ConfigService();
 
 export const s3 = new S3Client({
-  endpoint: configService.get<string>('MINIO_ENDPOINT') as string,
+  endpoint: configService.get<string>('MINIO_ENDPOINT'),
   credentials: {
     accessKeyId: configService.get<string>('MINIO_ACCESS_KEY') as string,
     secretAccessKey: configService.get<string>('MINIO_SECRET_KEY') as string,

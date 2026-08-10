@@ -89,7 +89,7 @@ describe('DataSetController', () => {
     });
 
     const result = await controller.contributorDataSets(
-      { page: 1, limit: 10 } as any,
+      { page: 1, limit: 10 },
       { user: { id: 'user-1' } } as any,
     );
 

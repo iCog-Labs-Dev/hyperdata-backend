@@ -25,6 +25,7 @@ import { UserDeviceToken } from './entities/UserDeviceToken.entity';
 import { FinanceModule } from 'src/finance/finance.module';
 import { UserScore } from './entities/UserScore.entity';
 import { UserScoreService } from './service/UserScore.service';
+import type { StringValue } from 'ms';
 
 @Global() // Make AuthModule globally available
 @Module({
@@ -45,7 +46,10 @@ import { UserScoreService } from './service/UserScore.service';
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
         signOptions: {
-          expiresIn: configService.get<string>('JWT_EXPIRES_IN', '24h'),
+          expiresIn: configService.get<string>(
+            'JWT_EXPIRES_IN',
+            '24h',
+          ) as StringValue,
         },
       }),
     }),
