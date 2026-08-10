@@ -43,6 +43,18 @@ record.
 - Updated `README.md` to reflect the Apache 2.0 license and upstream attribution.
 - Added this `CHANGES.md` file.
 
+## 2026-08-10
+
+### Authorization hardening
+- Restricted blog mutations and contact-submission staff access to administrators,
+  while retaining public contact form submission and blog reads.
+- Restricted reference-data administration to authenticated administrators.
+- Scoped contributor dataset deletion to its owner and restricted review decisions
+  to assigned, unexpired reviewer work items.
+- Enforced project-manager ownership for project operations and task-derived
+  management routes, and limited manager reassignment to super-administrators.
+- Bound text and audio submissions to microtasks from the requested task and to
+  the contributor's assigned work list.
 ## How to record future changes
 
 When making non-trivial modifications, add a short entry under a new dated
