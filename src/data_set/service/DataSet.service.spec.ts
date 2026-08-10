@@ -86,7 +86,7 @@ describe('DataSetService', () => {
       fileService as any,
       dataSetAnnotationService as any,
       cacheService as any,
-      {} as any,
+      { assertAssignedDataSet: jest.fn().mockResolvedValue({}) } as any,
     );
     (service as any).paginateService = paginateService;
   });
