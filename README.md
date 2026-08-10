@@ -1,6 +1,6 @@
-# Leyu API
+# Mahder API
 
-Leyu API is a NestJS backend for managing crowdsourced data collection, annotation, review, task distribution, contributor payments, notifications, and operational reporting.
+Mahder API is a NestJS backend for managing crowdsourced data collection, annotation, review, task distribution, contributor payments, notifications, and operational reporting.
 
 The system is designed around projects, tasks, micro-tasks, contributors, reviewers, facilitators, project managers, and administrators. It includes the infrastructure needed to run the platform locally or in containers: PostgreSQL, Redis, RabbitMQ, BullMQ, MinIO/S3-compatible storage, email, SMS, push notifications, and Santim Pay integration.
 
@@ -191,7 +191,7 @@ The system is designed around projects, tasks, micro-tasks, contributors, review
 
    ```bash
    git clone <repository-url>
-   cd leyu-backend
+   cd mahder-backend
    ```
 
 2. Install dependencies.
@@ -225,7 +225,7 @@ The system is designed around projects, tasks, micro-tasks, contributors, review
    JWT_EXPIRES_IN=24h
    JWT_REFRESH_EXPIRES_IN=7d
 
-   DATABASE_URL=postgresql://postgres:postgres123@localhost:5433/leyu_db
+   DATABASE_URL=postgresql://postgres:postgres123@localhost:5433/mahder_db
    DATABASE_SCHEMA=public
 
    REDIS_HOST=localhost
@@ -251,9 +251,9 @@ The system is designed around projects, tasks, micro-tasks, contributors, review
    MINIO_ENDPOINT=http://localhost:9000
    MINIO_ROOT_USER=minio_root_admin
    MINIO_ROOT_PASSWORD=replace_with_a_long_random_root_password
-   MINIO_ACCESS_KEY=leyu_app_storage
+   MINIO_ACCESS_KEY=mahder_app_storage
    MINIO_SECRET_KEY=replace_with_a_long_random_app_password
-   MINIO_BUCKET=leyu-bucket
+   MINIO_BUCKET=mahder-bucket
    MINIO_S3_FORCE_PATH_STYLE=true
    MINIO_SIGNATURE_VERSION=v4
 
