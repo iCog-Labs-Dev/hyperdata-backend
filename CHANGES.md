@@ -20,6 +20,7 @@ notable categories of modification; consult `git log` for the authoritative
 record.
 
 ### Bootstrap, error handling, and configuration safety
+
 - Removed a duplicate `ProjectModule` registration from `AppModule`.
 - Registered `AllExceptionsFilter` globally and added consistent formatting for
   array-style validation errors.
@@ -32,6 +33,7 @@ record.
   `LOG_LEVEL`).
 
 ### CI / deployment pipeline
+
 - Replaced placeholder unit-test and lint jobs in `.gitlab-ci.yml` with real
   `npm ci` + `npm run test` / `npm run lint` invocations.
 - Fixed the `push_iamge` job name typo to `push_image`.
@@ -40,8 +42,26 @@ record.
 - Added a post-deploy `/api/health` smoke-test job.
 
 ### Documentation
+
 - Updated `README.md` to reflect the Apache 2.0 license and upstream attribution.
 - Added this `CHANGES.md` file.
+
+## 2026-08-10
+
+### Authentication hardening
+
+- Rejected inactive accounts during JWT and refresh-token authentication.
+- Added rotating, revocable opaque refresh sessions backed by persistent storage.
+- Replaced predictable OTPs with CSPRNG-generated, HMAC-protected, single-use
+  codes with transactional attempt exhaustion.
+- Enabled strict request property whitelisting and replaced self-service profile
+  mass assignment with an explicit update allowlist.
+- Added fail-closed Redis throttling for authentication, signup, and verification
+  endpoints, with explicit trusted-proxy hop configuration.
+- Added atomic refresh rotation, password-reset revocation, and cleanup of expired
+  or old revoked sessions.
+- Added short-lived onboarding-only tokens and revoked active sessions when
+  passwords change or accounts are disabled.
 
 ## How to record future changes
 
