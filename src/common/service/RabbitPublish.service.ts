@@ -66,10 +66,7 @@ export class PublisherService {
   async publishNotificationEvent(data: {
     userId: string;
     notificationType:
-      | 'task-assign'
-      | 'task-invitation'
-      | 'task-rejected'
-      | 'task-approved';
+      'task-assign' | 'task-invitation' | 'task-rejected' | 'task-approved';
     displayName: string;
     title: string;
     message?: string;
