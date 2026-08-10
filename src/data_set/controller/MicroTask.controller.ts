@@ -55,9 +55,10 @@ import { MicroTask } from '../entities/MicroTask.entity';
 import XLSX from 'xlsx';
 import { Response } from 'express';
 import { MicroTaskRto } from '../rto/MicroTask.rto';
+import { ProjectScopeGuard } from 'src/project/guard/ProjectScope.guard';
 @Controller('workspace/micro-task')
 @ApiTags('MicroTask')
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard, ProjectScopeGuard)
 @ApiBearerAuth()
 export class MicroTaskController {
   constructor(
