@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -63,10 +64,12 @@ export class TaskSubmissionService {
     }
     // filter the micro task ids
     const micro_task_ids = datasets.map((d) => d.micro_task_id);
-    const microTasks: MicroTask[] = await this.microTaskService.findAll({
-      where: { id: In(micro_task_ids) },
-      select: { id: true },
-    });
+    const microTasks = await this.assertSubmissionMicroTasks(
+      user_id,
+      task_id,
+      micro_task_ids,
+      is_test,
+    );
     const contributorSubmittedDataSets = await this.dataSetService.findAll({
       where: { micro_task_id: In(micro_task_ids), contributor_id: user_id },
       select: { id: true },
@@ -314,19 +317,12 @@ export class TaskSubmissionService {
     if (!dialect_id || !language_id) {
       throw new BadRequestException('User has no dialect and language');
     }
-    // const microTaskIds = datasets.map(d => d.micro_task_id);
-    // const microTasks = await this.microTaskService.findAll({
-    //   where: { id: In(microTaskIds) },
-    //   select:{id:true}
-    // });
-    // await Promise.all(datasets.map((item)=>{
-    //   const microTask = microTaskMap.get(item.micro_task_id);
-    //     if (!microTask) {
-    //       throw new NotFoundException(`MicroTask with id ${item.micro_task_id} not found`);
-    //     }
-    //     return this.dataSetService.validateSubmission(contributorSubmittedDataSets,user_id,task.taskRequirement.max_retry_per_task)
-    //   }))
-    // Validate all micro_task_id exist
+    await this.assertSubmissionMicroTasks(
+      user_id,
+      task_id,
+      micro_task_ids,
+      is_test,
+    );
     await this.cacheService.clearContributorTaskCache(user_id, task_id);
     if (is_test) {
       const test_microTasks: MicroTask[] =
@@ -493,5 +489,50 @@ export class TaskSubmissionService {
         }
       }
     }
+  }
+
+  private async assertSubmissionMicroTasks(
+    userId: string,
+    taskId: string,
+    microTaskIds: string[],
+    isTest: boolean,
+  ): Promise<MicroTask[]> {
+    const uniqueIds = [...new Set(microTaskIds)];
+    if (uniqueIds.length !== microTaskIds.length) {
+      throw new BadRequestException(
+        'A micro task may only be submitted once per request',
+      );
+    }
+    const microTasks = await this.microTaskService.findAll({
+      where: { id: In(uniqueIds), task_id: taskId },
+      select: { id: true, is_test: true },
+    });
+    if (microTasks.length !== uniqueIds.length) {
+      throw new NotFoundException(
+        'One or more micro tasks do not belong to this task',
+      );
+    }
+    if (microTasks.some((microTask) => microTask.is_test !== isTest)) {
+      throw new BadRequestException(
+        'Micro task does not match the submission type',
+      );
+    }
+    if (isTest) {
+      return microTasks;
+    }
+    const assignment = await this.contributorMicroTaskService.findOne({
+      where: { contributor_id: userId, task_id: taskId },
+    });
+    if (!assignment || !assignment.micro_task_ids) {
+      throw new ForbiddenException(
+        'No micro tasks are assigned to this contributor',
+      );
+    }
+    if (!uniqueIds.every((id) => assignment.micro_task_ids.includes(id))) {
+      throw new ForbiddenException(
+        'Micro task is not assigned to this contributor',
+      );
+    }
+    return microTasks;
   }
 }

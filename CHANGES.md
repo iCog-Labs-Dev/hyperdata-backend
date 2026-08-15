@@ -48,6 +48,17 @@ record.
 
 ## 2026-08-10
 
+### Authorization hardening
+- Restricted blog mutations and contact-submission staff access to administrators,
+  while retaining public contact form submission and blog reads.
+- Restricted reference-data administration to authenticated administrators.
+- Scoped contributor dataset deletion to its owner and restricted review decisions
+  to assigned, unexpired reviewer work items.
+- Enforced project-manager ownership for project operations and task-derived
+  management routes, and limited manager reassignment to super-administrators.
+- Bound text and audio submissions to microtasks from the requested task and to
+  the contributor's assigned work list.
+- Updated dataset service test doubles for reviewer-assignment enforcement.
 ### Authentication hardening
 
 - Rejected inactive accounts during JWT and refresh-token authentication.

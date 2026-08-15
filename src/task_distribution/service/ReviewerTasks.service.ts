@@ -22,7 +22,11 @@ export class ReviewerTaskService {
   ): Promise<string[]> {
     const tasks: ReviewerTasks | null =
       await this.reviewerTaskRepository.findOne({
-        where: { reviewer_id: reviewerId, task_id: taskId },
+        where: {
+          reviewer_id: reviewerId,
+          task_id: taskId,
+          expire_date: MoreThan(new Date()),
+        },
       });
     if (tasks) {
       return tasks.data_set_ids;
@@ -59,20 +63,13 @@ export class ReviewerTaskService {
     dataSetId: string,
     queryRunner: QueryRunner,
   ): Promise<void> {
-    const reviewerTask = await this.reviewerTaskRepository.findOne({
-      where: {
-        reviewer_id: reviewerId,
-        task_id: taskId,
-      },
-    });
-    if (!reviewerTask) {
-      throw new UnauthorizedException('Reviewer is not assigned to this task');
-    }
-    const reviewerDataSetIds = reviewerTask.data_set_ids;
-    if (!reviewerDataSetIds.includes(dataSetId)) {
-      throw new UnauthorizedException('Reviewer is not assigned to this task');
-    }
     const manager = queryRunner.manager;
+    const reviewerTask = await this.assertAssignedDataSet(
+      reviewerId,
+      taskId,
+      dataSetId,
+      queryRunner,
+    );
     const leftDataSets = reviewerTask.data_set_ids.filter(
       (d) => d !== dataSetId,
     );
@@ -82,6 +79,28 @@ export class ReviewerTaskService {
       { data_set_ids: leftDataSets },
     );
     return;
+  }
+
+  async assertAssignedDataSet(
+    reviewerId: string,
+    taskId: string,
+    dataSetId: string,
+    queryRunner: QueryRunner,
+  ): Promise<ReviewerTasks> {
+    const reviewerTask = await queryRunner.manager
+      .createQueryBuilder(ReviewerTasks, 'reviewer_task')
+      .setLock('pessimistic_write')
+      .where('reviewer_task.reviewer_id = :reviewerId', { reviewerId })
+      .andWhere('reviewer_task.task_id = :taskId', { taskId })
+      .andWhere(':dataSetId = ANY(reviewer_task.data_set_ids)', { dataSetId })
+      .andWhere('reviewer_task.expire_date > NOW()')
+      .getOne();
+    if (!reviewerTask) {
+      throw new UnauthorizedException(
+        'Reviewer is not assigned to this dataset',
+      );
+    }
+    return reviewerTask;
   }
 
   /**
