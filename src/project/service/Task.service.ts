@@ -1391,6 +1391,15 @@ export class TaskService {
     return total_projects;
   }
   async updateTaskPayment(task_id: string, payment: UpdateTaskPaymentDto) {
+    const task = await this.taskRepository.findOne({ where: { id: task_id } });
+    if (!task) {
+      throw new NotFoundException('Task not found');
+    }
+    if (task.distribution_started) {
+      throw new BadRequestException(
+        'Payment rates cannot be changed after task distribution starts',
+      );
+    }
     return await this.taskPaymentService.update(task_id, payment);
   }
   /**

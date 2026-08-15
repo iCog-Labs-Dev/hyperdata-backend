@@ -38,6 +38,8 @@ jest.mock('src/auth/service/UserVerificationCode.service', () => ({
 jest.mock('src/utils/security/credential.util', () => ({
   hashPassword: jest.fn(),
   verifyPassword: jest.fn(),
+  generateOtp: jest.fn(() => '123456'),
+  hashOtp: jest.fn((value) => `hash:${value}`),
 }));
 
 import { JwtService } from '@nestjs/jwt';
@@ -114,6 +116,7 @@ describe('UserService', () => {
       userScoreService as any,
       userVerificationService as any,
       jwtService as unknown as JwtService,
+      { revokeAll: jest.fn() } as any,
     );
   });
 
@@ -160,8 +163,8 @@ describe('UserService', () => {
       userRepository.findOne.mockResolvedValue(createUser());
 
       await service.findOneWithPassword({
-        where: { email: 'user@example.com' } as any,
-        relations: { role: true } as any,
+        where: { email: 'user@example.com' },
+        relations: { role: true },
       });
 
       expect(userRepository.findOne).toHaveBeenCalledWith({

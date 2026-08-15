@@ -24,7 +24,7 @@ import { AudioService } from './service/Audio.service';
         exchanges: [
           {
             name: config.get<string>('RABBITMQ_EXCHANGE_NAME') as string,
-            type: config.get<string>('RABBITMQ_EXCHANGE_TYPE') as any,
+            type: config.get<string>('RABBITMQ_EXCHANGE_TYPE'),
           },
           {
             name: config.get<string>(
@@ -46,7 +46,12 @@ import { AudioService } from './service/Audio.service';
       inject: [ConfigService],
     }),
   ],
-  controllers: [ActivityLogController, NotificationController, TestController],
+  // Test endpoints can publish workflow events and must never be registered in production.
+  controllers: [
+    ActivityLogController,
+    NotificationController,
+    ...(process.env.NODE_ENV === 'production' ? [] : [TestController]),
+  ],
   providers: [
     PaginationService,
     FileService,

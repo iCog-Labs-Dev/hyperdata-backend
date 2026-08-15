@@ -247,7 +247,7 @@ describe('MicroTaskService', () => {
       const result = await service.getContributorParticipatedDataSets(
         'user-1',
         'task-1',
-        { page: 1, limit: 10 } as any,
+        { page: 1, limit: 10 },
       );
 
       expect(fileService.getPreSignedUrl).toHaveBeenCalledWith('audio.wav');
@@ -302,7 +302,7 @@ describe('MicroTaskService', () => {
       const result = await service.getContributorParticipatedDataSets(
         'user-1',
         'task-1',
-        { page: 1, limit: 10 } as any,
+        { page: 1, limit: 10 },
       );
 
       expect(fileService.getPreSignedUrl).toHaveBeenCalledWith('output.wav');

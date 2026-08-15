@@ -361,6 +361,8 @@ export class TaskDistributionController {
   }
 
   @Post('/re-distribution')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @ApiOperation({ summary: 'Initialize task distribution' })
   @ApiResponse({ status: 201, description: 'Task distribution initialized' })
   async initializeTaskReDistribution() {

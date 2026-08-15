@@ -39,6 +39,9 @@ async function bootstrap() {
   });
 
   const configService = app.get(ConfigService);
+  const trustProxyHops = configService.get<number>('TRUST_PROXY_HOPS', 0);
+  const expressApp = app.getHttpAdapter().getInstance();
+  expressApp.set('trust proxy', trustProxyHops);
   app.useGlobalFilters(new AllExceptionsFilter());
   app.useGlobalPipes(new CustomValidationPipe());
 
@@ -72,23 +75,23 @@ async function bootstrap() {
   app.useGlobalInterceptors(new GlobalResponseInterceptor());
   app.setGlobalPrefix('api');
 
-  // Create your queues
-  const myQueue = new Queue('file-upload', {
-    connection: {
-      host: configService.get<string>('REDIS_HOST'),
-      port: Number(configService.get<string>('REDIS_PORT') || '6379'),
-    },
-  });
+  // Queue administration exposes job payloads and controls, so never mount it in production.
+  if (environment !== 'production') {
+    const myQueue = new Queue('file-upload', {
+      connection: {
+        host: configService.get<string>('REDIS_HOST'),
+        port: Number(configService.get<string>('REDIS_PORT') || '6379'),
+      },
+    });
 
-  // Create Bull Board
-  const serverAdapter = new ExpressAdapter();
-  serverAdapter.setBasePath('/admin/queues');
-
-  createBullBoard({
-    queues: [new BullMQAdapter(myQueue)],
-    serverAdapter,
-  });
-  app.use('/admin/queues', serverAdapter.getRouter());
+    const serverAdapter = new ExpressAdapter();
+    serverAdapter.setBasePath('/admin/queues');
+    createBullBoard({
+      queues: [new BullMQAdapter(myQueue)],
+      serverAdapter,
+    });
+    app.use('/admin/queues', serverAdapter.getRouter());
+  }
 
   await app.listen(process.env.PORT ?? 3000);
 

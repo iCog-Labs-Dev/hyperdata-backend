@@ -28,6 +28,8 @@ jest.mock('src/common/service/File.service', () => ({
 
 jest.mock('src/utils/security/credential.util', () => ({
   verifyPassword: jest.fn(),
+  generateOtp: jest.fn(() => '123456'),
+  hashOtp: jest.fn((value) => `hash:${value}`),
 }));
 
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
@@ -46,12 +48,21 @@ describe('AuthService', () => {
   };
   let permissionsService: { findMany: jest.Mock };
   let rolesService: { findMany: jest.Mock; findOne: jest.Mock };
-  let userVerificationService: { create: jest.Mock; findOne: jest.Mock };
+  let userVerificationService: {
+    create: jest.Mock;
+    findOne: jest.Mock;
+    consume: jest.Mock;
+  };
   let smsService: { sendVerificationCode: jest.Mock };
   let mailService: { sendEmail: jest.Mock };
   let fileService: { getPreSignedUrl: jest.Mock };
   let jwtService: { verify: jest.Mock; sign: jest.Mock };
   let eventEmitter: { emit: jest.Mock };
+  let refreshSessions: {
+    create: jest.Mock;
+    rotate: jest.Mock;
+    revokeAll: jest.Mock;
+  };
   let verifyPasswordMock: jest.MockedFunction<typeof verifyPassword>;
 
   function createUser(overrides: Record<string, unknown> = {}) {
@@ -84,12 +95,21 @@ describe('AuthService', () => {
     };
     permissionsService = { findMany: jest.fn() };
     rolesService = { findMany: jest.fn(), findOne: jest.fn() };
-    userVerificationService = { create: jest.fn(), findOne: jest.fn() };
+    userVerificationService = {
+      create: jest.fn(),
+      findOne: jest.fn(),
+      consume: jest.fn(),
+    };
     smsService = { sendVerificationCode: jest.fn() };
     mailService = { sendEmail: jest.fn() };
     fileService = { getPreSignedUrl: jest.fn() };
     jwtService = { verify: jest.fn(), sign: jest.fn() };
     eventEmitter = { emit: jest.fn() };
+    refreshSessions = {
+      create: jest.fn(),
+      rotate: jest.fn(),
+      revokeAll: jest.fn(),
+    };
     verifyPasswordMock = verifyPassword as jest.MockedFunction<
       typeof verifyPassword
     >;
@@ -100,11 +120,12 @@ describe('AuthService', () => {
       permissionsService as any,
       rolesService as any,
       userVerificationService as any,
-      smsService as any,
+      smsService,
       mailService as any,
       fileService as any,
       jwtService as unknown as JwtService,
       eventEmitter as unknown as EventEmitter2,
+      refreshSessions as any,
     );
   });
 
@@ -280,41 +301,25 @@ describe('AuthService', () => {
 
   describe('refreshToken', () => {
     it('should return new access and refresh tokens for a valid refresh token', async () => {
-      jwtService.verify.mockResolvedValue({
-        sub: 'user-1',
-        email: 'user@example.com',
-      });
-      jwtService.sign
-        .mockReturnValueOnce('new-access-token')
-        .mockReturnValueOnce('new-refresh-token');
+      refreshSessions.rotate.mockResolvedValue('user-1');
+      refreshSessions.create.mockResolvedValue('new-refresh-token');
+      usersService.findOneWithPassword.mockResolvedValue(createUser());
+      jwtService.sign.mockReturnValueOnce('new-access-token');
 
       await expect(service.refreshToken('refresh-token')).resolves.toEqual({
         access_token: 'new-access-token',
-        new_refresh_token: 'new-refresh-token',
+        refresh_token: 'new-refresh-token',
       });
 
-      expect(jwtService.verify).toHaveBeenCalledWith('refresh-token', {
-        secret: 'refresh-secret',
-      });
+      expect(refreshSessions.rotate).toHaveBeenCalledWith('refresh-token');
       expect(jwtService.sign).toHaveBeenNthCalledWith(1, {
         sub: 'user-1',
         email: 'user@example.com',
       });
-      expect(jwtService.sign).toHaveBeenNthCalledWith(
-        2,
-        {
-          sub: 'user-1',
-          email: 'user@example.com',
-        },
-        {
-          expiresIn: '7d',
-          secret: 'refresh-secret',
-        },
-      );
     });
 
     it('should reject invalid refresh tokens', async () => {
-      jwtService.verify.mockRejectedValue(new Error('invalid'));
+      refreshSessions.rotate.mockRejectedValue(new Error('invalid'));
 
       await expect(service.refreshToken('bad-token')).rejects.toThrow(
         UnauthorizedException,
@@ -370,7 +375,6 @@ describe('AuthService', () => {
     });
 
     it('should send email verification codes for email usernames', async () => {
-      const randomSpy = jest.spyOn(Math, 'random').mockReturnValue(0.123456);
       const user = createUser();
 
       usersService.findOneWithPassword.mockResolvedValue(user);
@@ -383,21 +387,18 @@ describe('AuthService', () => {
       expect(mailService.sendEmail).toHaveBeenCalledWith(
         user.email,
         'Welcome to Leyu platform',
-        expect.stringContaining('211110'),
+        expect.stringContaining('123456'),
       );
       expect(smsService.sendVerificationCode).not.toHaveBeenCalled();
       expect(userVerificationService.create).toHaveBeenCalledWith({
         username: user.email,
-        code: '211110',
+        code: 'hash:123456',
         expiration_date: expect.any(Date),
         status: 'pending',
       });
-
-      randomSpy.mockRestore();
     });
 
     it('should send SMS verification codes for phone usernames', async () => {
-      const randomSpy = jest.spyOn(Math, 'random').mockReturnValue(0.5);
       const user = createUser();
 
       usersService.findOneWithPassword.mockResolvedValue(user);
@@ -409,17 +410,15 @@ describe('AuthService', () => {
 
       expect(smsService.sendVerificationCode).toHaveBeenCalledWith(
         user.phone_number,
-        '550000',
+        '123456',
       );
       expect(mailService.sendEmail).not.toHaveBeenCalled();
       expect(userVerificationService.create).toHaveBeenCalledWith({
         username: user.phone_number,
-        code: '550000',
+        code: 'hash:123456',
         expiration_date: expect.any(Date),
         status: 'pending',
       });
-
-      randomSpy.mockRestore();
     });
   });
 
@@ -473,47 +472,44 @@ describe('AuthService', () => {
         'user-1',
         'new-password',
       );
+      expect(refreshSessions.revokeAll).toHaveBeenCalledWith('user-1');
     });
   });
 
   describe('verifyOtp', () => {
     it('should reject missing verification codes', async () => {
-      userVerificationService.findOne.mockResolvedValue(null);
+      userVerificationService.consume.mockRejectedValue(new Error());
 
       await expect(
         service.verifyOtp({ username: 'user@example.com', code: '123456' }),
-      ).rejects.toThrow('Invalid code');
+      ).rejects.toThrow('Invalid or expired code');
     });
 
     it('should reject expired verification codes', async () => {
-      userVerificationService.findOne.mockResolvedValue({
-        expiration_date: new Date(Date.now() - 1000),
-      });
+      userVerificationService.consume.mockRejectedValue(new Error());
 
       await expect(
         service.verifyOtp({ username: 'user@example.com', code: '123456' }),
-      ).rejects.toThrow('Code expired');
+      ).rejects.toThrow('Invalid or expired code');
     });
 
     it('should allow valid verification codes', async () => {
-      userVerificationService.findOne.mockResolvedValue({
-        expiration_date: new Date(Date.now() + 5 * 60 * 1000),
-      });
+      userVerificationService.consume.mockResolvedValue(undefined);
 
       await expect(
         service.verifyOtp({ username: 'user@example.com', code: '123456' }),
       ).resolves.toBeUndefined();
-      expect(userVerificationService.findOne).toHaveBeenCalledWith({
-        where: { username: 'user@example.com', code: '123456' },
-      });
+      expect(userVerificationService.consume).toHaveBeenCalledWith(
+        'user@example.com',
+        '123456',
+      );
     });
   });
 
   describe('generateToken', () => {
     it('should sign access and refresh tokens with the expected payloads', async () => {
-      jwtService.sign
-        .mockReturnValueOnce('access-token')
-        .mockReturnValueOnce('refresh-token');
+      jwtService.sign.mockReturnValueOnce('access-token');
+      refreshSessions.create.mockResolvedValue('refresh-token');
 
       await expect(
         service.generateToken('user-1', 'user@example.com'),
@@ -526,17 +522,7 @@ describe('AuthService', () => {
         sub: 'user-1',
         email: 'user@example.com',
       });
-      expect(jwtService.sign).toHaveBeenNthCalledWith(
-        2,
-        {
-          sub: 'user-1',
-          email: 'user@example.com',
-        },
-        {
-          expiresIn: '7d',
-          secret: 'refresh-secret',
-        },
-      );
+      expect(refreshSessions.create).toHaveBeenCalledWith('user-1');
     });
   });
 });
