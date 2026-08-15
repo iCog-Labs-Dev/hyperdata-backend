@@ -120,7 +120,7 @@ describe('AuthService', () => {
       permissionsService as any,
       rolesService as any,
       userVerificationService as any,
-      smsService as any,
+      smsService,
       mailService as any,
       fileService as any,
       jwtService as unknown as JwtService,

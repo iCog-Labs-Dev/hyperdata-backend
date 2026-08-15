@@ -163,8 +163,8 @@ describe('UserService', () => {
       userRepository.findOne.mockResolvedValue(createUser());
 
       await service.findOneWithPassword({
-        where: { email: 'user@example.com' } as any,
-        relations: { role: true } as any,
+        where: { email: 'user@example.com' },
+        relations: { role: true },
       });
 
       expect(userRepository.findOne).toHaveBeenCalledWith({

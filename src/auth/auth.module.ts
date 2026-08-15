@@ -30,6 +30,7 @@ import { RefreshSession } from './entities/RefreshSession.entity';
 import { RefreshSessionService } from './service/RefreshSession.service';
 import { AuthRateLimitGuard } from './guard/auth-rate-limit.guard';
 import { OnboardingAuthGuard } from './guard/onboarding-auth.guard';
+import type { StringValue } from 'ms';
 
 @Global() // Make AuthModule globally available
 @Module({
@@ -51,7 +52,10 @@ import { OnboardingAuthGuard } from './guard/onboarding-auth.guard';
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
         signOptions: {
-          expiresIn: configService.get<string>('JWT_EXPIRES_IN', '24h'),
+          expiresIn: configService.get<string>(
+            'JWT_EXPIRES_IN',
+            '24h',
+          ) as StringValue,
         },
       }),
     }),

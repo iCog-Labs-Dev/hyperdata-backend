@@ -25,8 +25,37 @@ export class Transaction {
     [key: string]: any;
   };
 
-  @Column({ type: 'enum', enum: ['Pending', 'Done'] })
-  status: 'Pending' | 'Done';
+  @Column({
+    type: 'enum',
+    enum: [
+      'Pending',
+      'Done',
+      'Reserved',
+      'Processing',
+      'Submitted',
+      'Settled',
+      'Failed',
+      'Reversed',
+    ],
+  })
+  status:
+    | 'Pending'
+    | 'Done'
+    | 'Reserved'
+    | 'Processing'
+    | 'Submitted'
+    | 'Settled'
+    | 'Failed'
+    | 'Reversed';
+
+  @Column({ nullable: true, unique: true })
+  provider_reference: string | null;
+
+  @Column({ nullable: true })
+  provider_status: string | null;
+
+  @Column({ nullable: true })
+  failure_reason: string | null;
 
   @Column({ type: 'uuid' })
   user_id: string;
