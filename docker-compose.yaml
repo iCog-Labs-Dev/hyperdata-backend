@@ -151,4 +151,3 @@ volumes:
 
 networks:
   backend_network:
-    internal: true
