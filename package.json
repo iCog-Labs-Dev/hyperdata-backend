@@ -4,7 +4,7 @@
   "description": "",
   "author": "",
   "private": true,
-  "packageManager": "npm@10.0.0",
+  "packageManager": "npm@11.5.2",
   "license": "Apache-2.0",
   "scripts": {
     "build": "nest build",
