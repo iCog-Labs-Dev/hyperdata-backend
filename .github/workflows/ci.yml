@@ -35,8 +35,8 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
-      - name: Update npm to v10
-        run: npm install -g npm@10
+      - name: Update npm to v11.5.2
+        run: npm install -g npm@11.5.2
 
       - name: Install dependencies
         run: npm ci
@@ -65,8 +65,8 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
-      - name: Update npm to v10
-        run: npm install -g npm@10
+      - name: Update npm to v11.5.2
+        run: npm install -g npm@11.5.2
         
       - name: Install dependencies
         run: npm ci
