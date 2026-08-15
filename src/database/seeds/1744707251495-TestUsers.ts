@@ -14,6 +14,7 @@ export default class TestUsers1744707251495 implements Seeder {
     }
 
     if (process.env.ENABLE_DEMO_USERS_SEED !== 'true') {
+      console.log('Demo users seed is disabled, please set ENABLE_DEMO_USERS_SEED=true in the .env  to enable it');
       return;
     }
 
@@ -68,6 +69,7 @@ export default class TestUsers1744707251495 implements Seeder {
       },
     ];
 
+    let userCount = 0;
     for (const u of users) {
       const exists = await dataSource.query(
         `SELECT id FROM "users" WHERE email = $1`,
@@ -104,6 +106,8 @@ export default class TestUsers1744707251495 implements Seeder {
           [userId],
         );
       }
+      userCount++;
     }
+    console.log(`Demo users seed completed. ${userCount} users created.`);
   }
 }
