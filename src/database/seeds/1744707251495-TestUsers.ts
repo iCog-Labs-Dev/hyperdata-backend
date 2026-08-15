@@ -14,7 +14,9 @@ export default class TestUsers1744707251495 implements Seeder {
     }
 
     if (process.env.ENABLE_DEMO_USERS_SEED !== 'true') {
-      console.log('Demo users seed is disabled, please set ENABLE_DEMO_USERS_SEED=true in the .env  to enable it');
+      console.log(
+        'Demo users seed is disabled, please set ENABLE_DEMO_USERS_SEED=true in the .env to enable it',
+      );
       return;
     }
 
