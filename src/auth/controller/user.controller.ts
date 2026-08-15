@@ -48,6 +48,8 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { AuthRateLimitGuard } from '../guard/auth-rate-limit.guard';
+import { OnboardingAuthGuard } from '../guard/onboarding-auth.guard';
 
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -112,15 +114,17 @@ export class UsersController {
   }
 
   @Post('sign-up')
+  @UseGuards(AuthRateLimitGuard)
   async SignUp(@Body() body: SignUpDto) {
     return this.usersService.signUp(body.phone_number);
   }
   @Post('verify/:id')
+  @UseGuards(AuthRateLimitGuard)
   async verifyUser(@Param('id') id: string, @Body() body: VerifyAccountDto) {
     return this.usersService.verifyAccount(id, body.code, body.phone);
   }
   @Patch('')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(OnboardingAuthGuard)
   async firstUpdate(
     @Body()
     body: FirstContributorUpdateDto,

@@ -14,7 +14,7 @@ describe('AuthController', () => {
     refreshToken: jest.Mock;
     forgotPassword: jest.Mock;
     setNewPassword: jest.Mock;
-    verifyOtp: jest.Mock;
+    validateOtp: jest.Mock;
     getAllRoles: jest.Mock;
     getRoleWithPermissions: jest.Mock;
   };
@@ -26,7 +26,7 @@ describe('AuthController', () => {
       refreshToken: jest.fn(),
       forgotPassword: jest.fn(),
       setNewPassword: jest.fn(),
-      verifyOtp: jest.fn(),
+      validateOtp: jest.fn(),
       getAllRoles: jest.fn(),
       getRoleWithPermissions: jest.fn(),
     };
@@ -98,7 +98,7 @@ describe('AuthController', () => {
   });
 
   it('should return a stable success response after otp verification', async () => {
-    authService.verifyOtp.mockResolvedValue(undefined);
+    authService.validateOtp.mockResolvedValue(undefined);
 
     await expect(
       controller.verifyOtp({
@@ -106,7 +106,7 @@ describe('AuthController', () => {
         code: '123456',
       } as any),
     ).resolves.toEqual({ message: 'OTP verified successfully' });
-    expect(authService.verifyOtp).toHaveBeenCalledWith({
+    expect(authService.validateOtp).toHaveBeenCalledWith({
       username: 'user@example.com',
       code: '123456',
     });

@@ -39,6 +39,9 @@ async function bootstrap() {
   });
 
   const configService = app.get(ConfigService);
+  const trustProxyHops = configService.get<number>('TRUST_PROXY_HOPS', 0);
+  const expressApp = app.getHttpAdapter().getInstance();
+  expressApp.set('trust proxy', trustProxyHops);
   app.useGlobalFilters(new AllExceptionsFilter());
   app.useGlobalPipes(new CustomValidationPipe());
 
