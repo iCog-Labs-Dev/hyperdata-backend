@@ -46,7 +46,12 @@ import { AudioService } from './service/Audio.service';
       inject: [ConfigService],
     }),
   ],
-  controllers: [ActivityLogController, NotificationController, TestController],
+  // Test endpoints can publish workflow events and must never be registered in production.
+  controllers: [
+    ActivityLogController,
+    NotificationController,
+    ...(process.env.NODE_ENV === 'production' ? [] : [TestController]),
+  ],
   providers: [
     PaginationService,
     FileService,
