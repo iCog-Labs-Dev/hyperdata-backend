@@ -55,7 +55,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   document.servers = [{ url: '/api' }];
-  SwaggerModule.setup('doc', app, document);
+  SwaggerModule.setup('api/docs', app, document);
   // writeFileSync('../swagger-spec.json', JSON.stringify(document));
   const corsOrigin = configService.get<string>('CORS_ORIGIN') || '*';
   const environment = configService.get<string>('NODE_ENV');
@@ -78,8 +78,13 @@ async function bootstrap() {
   // Queue administration exposes job payloads and controls, so never mount it in production.
   if (environment !== 'production') {
     const myQueue = new Queue('file-upload', {
+      // Keep Bull Board on the same authenticated Redis connection as BullMQ.
+      // Supplying only host/port creates an unauthenticated client, which fails
+      // when BullMQ issues its startup INFO command against password-protected Redis.
       connection: {
-        url: configService.get<string>('REDIS_URL'),
+        host: configService.getOrThrow<string>('REDIS_HOST'),
+        port: configService.getOrThrow<number>('REDIS_PORT'),
+        password: configService.getOrThrow<string>('REDIS_PASSWORD'),
       },
     });
 
