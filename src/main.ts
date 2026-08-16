@@ -47,8 +47,8 @@ async function bootstrap() {
 
   patchNestJsSwagger();
   const config = new DocumentBuilder()
-    .setTitle('Leyu API')
-    .setDescription('Leyu Api documentation')
+    .setTitle('Mahder API')
+    .setDescription('Mahder API documentation')
     .setVersion('1.0')
     .addTag('API')
     .addBearerAuth() // Ensure BearerAuth is added
