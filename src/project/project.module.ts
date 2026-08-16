@@ -68,6 +68,12 @@ import { ProjectScopeGuard } from './guard/ProjectScope.guard';
     InivitationController,
     FacilitatorController,
   ],
-  exports: [TaskService, UserTaskService, ProjectService, ProjectScopeGuard],
+  exports: [
+    TaskService,
+    UserTaskService,
+    ProjectService,
+    ProjectScopeGuard,
+    TypeOrmModule,
+  ],
 })
 export class ProjectModule {}

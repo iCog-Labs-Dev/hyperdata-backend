@@ -48,13 +48,13 @@ export class Transaction {
     | 'Failed'
     | 'Reversed';
 
-  @Column({ nullable: true, unique: true })
+  @Column({ type: 'varchar', nullable: true, unique: true })
   provider_reference: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   provider_status: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   failure_reason: string | null;
 
   @Column({ type: 'uuid' })

@@ -47,8 +47,8 @@ async function bootstrap() {
 
   patchNestJsSwagger();
   const config = new DocumentBuilder()
-    .setTitle('Leyu API')
-    .setDescription('Leyu Api documentation')
+    .setTitle('Mahder API')
+    .setDescription('Mahder API documentation')
     .setVersion('1.0')
     .addTag('API')
     .addBearerAuth() // Ensure BearerAuth is added
@@ -99,7 +99,7 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT ?? 3000);
 
-  Logger.log(`🚀 Leyu Api  is running on port ${port}`);
+  Logger.log(`🚀 Mahder API  is running on port ${port}`);
   Logger.log(`📦 Environment: ${environment}`);
   Logger.log(`🌐 CORS enabled for origin: ${corsOrigin}`);
   Logger.log(`📚 Swagger documentation: http://localhost:${port}/api/docs`);
