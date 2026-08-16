@@ -55,7 +55,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   document.servers = [{ url: '/api' }];
-  SwaggerModule.setup('doc', app, document);
+  SwaggerModule.setup('api/docs', app, document);
   // writeFileSync('../swagger-spec.json', JSON.stringify(document));
   const corsOrigin = configService.get<string>('CORS_ORIGIN') || '*';
   const environment = configService.get<string>('NODE_ENV');
