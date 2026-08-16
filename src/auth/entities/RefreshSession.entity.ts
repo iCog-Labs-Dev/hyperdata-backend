@@ -19,7 +19,7 @@ export class RefreshSession {
   @Column()
   expires_at: Date;
 
-  @Column({ nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   revoked_at: Date | null;
 
   @CreateDateColumn()

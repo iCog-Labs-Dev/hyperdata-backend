@@ -79,8 +79,7 @@ async function bootstrap() {
   if (environment !== 'production') {
     const myQueue = new Queue('file-upload', {
       connection: {
-        host: configService.get<string>('REDIS_HOST'),
-        port: Number(configService.get<string>('REDIS_PORT') || '6379'),
+        url: configService.get<string>('REDIS_URL'),
       },
     });
 
@@ -95,7 +94,7 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT ?? 3000);
 
-  Logger.log(`🚀 Leyu Api  is running on port ${port}`);
+  Logger.log(`🚀 Mahder API  is running on port ${port}`);
   Logger.log(`📦 Environment: ${environment}`);
   Logger.log(`🌐 CORS enabled for origin: ${corsOrigin}`);
   Logger.log(`📚 Swagger documentation: http://localhost:${port}/api/docs`);
