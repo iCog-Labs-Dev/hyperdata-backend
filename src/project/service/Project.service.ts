@@ -249,7 +249,7 @@ export class ProjectService {
     if (user) {
       this.emailService.sendEmail(
         user.email,
-        'Welcome to Leyu platform',
+        'Welcome to Mahder platform',
         `
           Dear ${user.first_name} ${user.middle_name},you are assigned as a Project Manager for the project ${project?.name}
           `,
@@ -268,7 +268,7 @@ export class ProjectService {
       // Send email to user with random password
       this.emailService.sendEmail(
         user.email,
-        'Welcome to Leyu platform',
+        'Welcome to Mahder platform',
         `
             Dear user, welcome to our platform,you are assigned as a Project Manager for the project ${project?.name}
             Your password is ${randomPassword}

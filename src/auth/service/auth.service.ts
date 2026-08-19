@@ -206,7 +206,7 @@ export class AuthService {
     if (username == user.email) {
       await this.mailService.sendEmail(
         user.email,
-        'Welcome to Leyu platform',
+        'Welcome to Mahder platform',
         message,
       );
     } else {

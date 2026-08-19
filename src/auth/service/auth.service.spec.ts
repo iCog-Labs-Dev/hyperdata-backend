@@ -386,7 +386,7 @@ describe('AuthService', () => {
 
       expect(mailService.sendEmail).toHaveBeenCalledWith(
         user.email,
-        'Welcome to Leyu platform',
+        'Welcome to Mahder platform',
         expect.stringContaining('123456'),
       );
       expect(smsService.sendVerificationCode).not.toHaveBeenCalled();
