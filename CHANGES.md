@@ -1,5 +1,4 @@
 # Changes
-
 This file documents modifications made to the upstream project in compliance with
 Section 4(b) of the Apache License, Version 2.0.
 
@@ -32,15 +31,6 @@ record.
   (`NODE_ENV`, `AFRO_SMS_API_KEY`, `AFRO_SMS_API_SECRET`, `CORS_ORIGIN`,
   `LOG_LEVEL`).
 
-### CI / deployment pipeline
-
-- Replaced placeholder unit-test and lint jobs in `.gitlab-ci.yml` with real
-  `npm ci` + `npm run test` / `npm run lint` invocations.
-- Fixed the `push_iamge` job name typo to `push_image`.
-- Parameterized the deploy SSH target via `DEPLOY_HOST` / `DEPLOY_USER`
-  environment variables instead of a hard-coded IP.
-- Added a post-deploy `/api/health` smoke-test job.
-
 ### Documentation
 
 - Updated `README.md` to reflect the Apache 2.0 license and upstream attribution.
@@ -59,8 +49,8 @@ record.
 - Bound text and audio submissions to microtasks from the requested task and to
   the contributor's assigned work list.
 - Updated dataset service test doubles for reviewer-assignment enforcement.
-### Authentication hardening
 
+### Authentication hardening
 - Rejected inactive accounts during JWT and refresh-token authentication.
 - Added rotating, revocable opaque refresh sessions backed by persistent storage.
 - Replaced predictable OTPs with CSPRNG-generated, HMAC-protected, single-use
@@ -96,6 +86,101 @@ record.
   credit.
 - Added unit coverage for payout signing and withdrawal reservation validation.
 
+### CI / deployment pipeline
+- Replaced placeholder unit-test and lint jobs in `.gitlab-ci.yml` with real
+  `npm ci` + `npm run test` / `npm run lint` invocations.
+- Fixed the `push_image` job name typo to `push_image`.
+- Parameterized the deploy SSH target via `DEPLOY_HOST` / `DEPLOY_USER`
+  environment variables instead of a hard-coded IP.
+- Added a post-deploy `/api/health` smoke-test job.
+- Added full-project typecheck gate to the CI pipeline.
+- Pinned npm to v10 in CI workflows and via packageManager.
+- Synced npm lockfile with package manifest for CI compatibility.
+- Enabled manual triggering of CI workflow with `workflow_dispatch`.
+- Fixed CI environment variables and references from Leyu to Mahder.
+
+* **PR #1**: Added unit tests for auth and dataset flows
+  - Added unit coverage for auth and dataset flows
+  - Added unit test summary for reviewers
+  - Fixed test import and e2e spec targets
+* **PR #2**: Fixed codebase issues phase 1
+  - Optimized Dockerfile with cache mount for npm installs
+  - Updated cmd so app starts even if migrations fails
+  - Fixed Docker compose file syntax
+* **PR #3**: Fixed GitLab CI cleanup
+  - Replaced GitLab CI jobs with GitHub Actions equivalents
+  - Added npm ci and test/lint invocations
+* **PR #5**: Added GitHub Actions CI pipeline, fixed lint problems and hardened checks
+  - Migrated from `.gitlab-ci.yml` to GitHub Actions workflow (`/.github/workflows/ci.yml`)
+  - Added CI workflow configuration with typecheck, test, and lint gates
+  - Updated environment variables and references from Leyu to Mahder
+  - Added seed data for roles, countries, regions, rejection types, and test users
+* **PR #6**: Fixed lock-file, lint and typecheck failures from latest dev changes
+  - Updated `package-lock.json` and `package.json` for npm v10 compatibility
+  - Fixed various service module imports and specifications
+  - Resolved lint and typecheck errors across auth, cache, data_set, task_distribution modules
+* **PR #7**: Fixed backend docker setup reliably, fixed login, and seed demo users
+  - Optimized Dockerfile with cache mount for npm installs
+  - Fixed app service startup even if migrations fail
+  - Changed RabbitMQ condition from `service_healthy` to `service_started`
+  - Added audio duration registering for speech datasets in seconds
+* **PR #11**: Rebranded to Mahder across all modules
+  - Updated `.env.example`, `README.md`, `docker-compose.yaml`, `package-lock.json`, `package.json`
+  - Renamed Swagger title from Leyu to Mahder
+  - Updated `src/app.module.ts` and package configuration
+* **PR #12**: Fixed Docker API access
+  - Fixed Docker Compose API access configuration
+* **PR #13**: Fixed Redis health check
+  - Improved Redis and health check reliability
+
+### Docker and infrastructure
+- Hardened Dockerfile for production with security improvements.
+- Fixed compose orchestration and blocked secret exposure.
+- Produced clean prod image via Dockerfile (instead of pulling image).
+- Fixed Dockerfile command syntax to use `&&` for chaining commands.
+- Enabled MinIO compose service with bucket initialization.
+- Configured manual triggering of CI workflow with `workflow_dispatch`.
+
+### Seed and test data
+- Removed 'Admin' users from test data in seeder.
+- Updated default system admin credentials.
+- Added test account section to README.
+- Simplified error handling and improved code readability across services and controllers.
+- Updated seed scripts to use upsert method and cleaned up hardcoded super admin creation logic.
+
+### TypeScript and configuration
+- Replaced deprecated `baseUrl` with `paths` and pinned global type packages.
+- Simplified type assertions and fixed lint errors.
+- Regenerated lockfile with npm 10 for CI compatibility.
+- Updated project statistics service to return default values instead of throwing
+  exceptions for missing projects.
+
+### Code quality and readability
+- Improved code formatting across multiple files.
+- Simplified error handling in various services and controllers.
+- Cleaned up GitLab CI configuration and added GitHub Actions CI pipeline.
+- Ran checks and parameterized deploy host.
+- Optimized Dockerfile with cache mount for npm installs.
+
+### Branding
+- Renamed from Leyu and/or hyperdata to Mahder.
+
+## 2026-08-19 - File upload integration
+- Replaced `multer-s3` (incompatible with `@aws-sdk/client-s3` v3) with a custom
+  `S3Storage` class that uses `@aws-sdk/lib-storage` `Upload` for multipart-aware
+  streaming uploads to MinIO/S3.
+- Fixed `forcePathStyle` configuration: the environment string `"true"` was passed
+  directly to `S3Client` (expected boolean), causing DNS resolution against virtual-host
+  style endpoints (`bucket.minio`) instead of path-style (`minio/bucket`).
+- Removed spurious `'error'` event listener on the `Upload` object that fired
+  non-fatal streaming warnings, which prematurely rejected the multer callback with
+  an `undefined` error.
+- Wrapped non-critical side-effects (`emailService.sendEmail`,
+  `activityLogService.create`) in `.catch()` handlers inside the project creation
+  transactional flow to prevent email failures from aborting the transaction.
+
+
+
 ## How to record future changes
 
 When making non-trivial modifications, add a short entry under a new dated
@@ -111,8 +196,7 @@ what diverges from upstream.
 - Do not include documentation-only files in implementation commits. The sole
   exception is this file, which may be committed separately to record the
   corresponding modifications.
-
 <!--
-## YYYY-MM-DD
-- Short description of change
+## YYYY-MM-DD - 
+- description of change
 -->
