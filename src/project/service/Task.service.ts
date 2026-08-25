@@ -537,7 +537,7 @@ export class TaskService {
     if (user) {
       this.emailService.sendEmail(
         user.email,
-        'Welcome to Leyu platform',
+        'Welcome to Mahder platform',
         `
         Dear ${user.first_name} ${user.middle_name},you are assigned as a facilitator for a task ${task.name}
        
@@ -557,7 +557,7 @@ export class TaskService {
       // Send email to user with random password
       this.emailService.sendEmail(
         user.email,
-        'Welcome to Leyu platform',
+        'Welcome to Mahder platform',
         `
           Dear user, Welcome to our platform,you are assigned as a facilitator for a task ${task.name}
           Your password is ${randomPassword}, you can change it later
@@ -615,7 +615,7 @@ export class TaskService {
     if (user) {
       this.emailService.sendEmail(
         user.email,
-        'Welcome to Leyu platform',
+        'Welcome to Mahder platform',
         `
         Dear ${user.first_name} ${user.middle_name},you are assigned as a reviewer for a task ${task.name}
        
@@ -635,7 +635,7 @@ export class TaskService {
       // Send email to user with random password
       this.emailService.sendEmail(
         user.email,
-        'Welcome to Leyu platform',
+        'Welcome to Mahder platform',
         `
           Dear user, Welcome to our platform,you are assigned as a reviewer for a task ${task.name}
           Your password is ${randomPassword}, you can change it later
@@ -1011,7 +1011,7 @@ export class TaskService {
     if (userTaskBefore.is_flagged) {
       this.emailService.sendEmail(
         userTaskBefore.user.email,
-        'Leyu platform',
+        'Mahder platform',
         `
         Dear ${userTaskBefore.user.first_name} ${userTaskBefore.user.middle_name},you are flagged from the task ${userTaskBefore.task.name}
         `,

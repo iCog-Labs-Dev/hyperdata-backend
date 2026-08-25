@@ -13,7 +13,7 @@ Any copyright headers present in upstream source files are preserved.
 
 ## Modifications
 
-All changes made in this fork relative to the upstream `leyu-backend` are
+All changes made in this fork relative to the upstream `mahder-backend` are
 tracked in the Git history of this repository. The list below summarizes the
 notable categories of modification; consult `git log` for the authoritative
 record.
