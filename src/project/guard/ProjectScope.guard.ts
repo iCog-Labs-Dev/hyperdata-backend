@@ -37,9 +37,17 @@ export class ProjectScopeGuard implements CanActivate {
     const taskId =
       request.params?.task_id ||
       request.params?.taskId ||
-      request.body?.task_id ||
-      request.params?.id;
-    if (taskId) {
+      request.body?.task_id;
+
+    // Only fall back to generic :id param for task-specific routes (e.g. /:id, /:id/members).
+    if (!taskId && request.params?.id && !request.path?.includes('/project/')) {
+      const task = await this.taskRepository.findOne({
+        where: { id: request.params.id },
+        relations: { project: true },
+      });
+      if (!task) throw new ForbiddenException('Task is not available');
+      await this.assertProjectManager(task.project_id, request.user.id);
+    } else if (taskId) {
       const task = await this.taskRepository.findOne({
         where: { id: taskId },
         relations: { project: true },

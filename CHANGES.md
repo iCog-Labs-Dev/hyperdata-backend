@@ -179,6 +179,21 @@ record.
   `activityLogService.create`) in `.catch()` handlers inside the project creation
   transactional flow to prevent email failures from aborting the transaction.
 
+## 2026-08-26 - ProjectManager tasks access fix & local DB tooling from docker-containers
+
+### Authorization fix (`ProjectScopeGuard`)
+- Fixed the guard resolving the generic `:id` route param as a **task ID** on
+  project-scoped routes (`GET /project-mgmt/task/project/:id`, `/all`,
+  `/archived/:id`), where `:id` is actually a **project UUID**.
+- Previously this caused every Project Manager request for their project's task
+  list to fail with `403 "Task is not available"` (tasks could be created but never listed).
+- The guard now only falls back to `:id` when the request path is not a
+  `/project/…` route; explicit `task_id` params and true task routes
+  (`/:id`, `/:id/members`, …) still enforce manager ownership as before.
+
+### Docker / infrastructure
+- Added an `adminer` service to `docker-compose.yaml` (port `5555:8080`) for local database management; waits on the `postgres` healthcheck and joins the private application network.
+- Simply it added adminer container to docker-compose for DB inspection
 
 
 ## How to record future changes
